@@ -407,7 +407,6 @@ local col_aqua   = vim.g.colors.cyan
 local col_red    = vim.g.colors.red
 local col_blue   = vim.g.colors.blue
 local col_green  = vim.g.colors.green
-local col_orange = vim.g.colors.bold_yellow
 local col_yellow = vim.g.colors.yellow
 local col_bg     = vim.g.colors.bg
 local col_fg     = vim.g.colors.fg
@@ -419,7 +418,7 @@ vim.cmd("highlight StatusModified       guibg=none guifg=" .. col_yellow)
 vim.cmd("highlight StatusFile           guibg=none guifg=" .. col_aqua)
 vim.cmd("highlight StatusFileSize       guibg=none guifg=" .. col_green)
 vim.cmd("highlight StatusEncoding       guibg=none guifg=" .. col_blue)
-vim.cmd("highlight StatusLocation       guibg=none guifg=" .. col_orange)
+vim.cmd("highlight StatusLocation       guibg=none guifg=" .. col_yellow)
 vim.cmd("highlight StatusPercent        guibg=none guifg=" .. col_red)
 vim.cmd("highlight StatusNorm           guibg=none guifg=" .. col_fg)
 vim.cmd("highlight StatusExtraMagenta   guibg=none guifg=" .. col_fg)
