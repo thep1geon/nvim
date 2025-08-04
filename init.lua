@@ -348,13 +348,8 @@ require('nvim-treesitter.configs').setup({
 -- =============================================
 -- ==              COLORSCHEME                ==
 -- =============================================
-vim.g.gruvbox_material_enable_italic = true
-vim.g.gruvbox_material_transparent_background = 2
-vim.g.gruvbox_material_ui_contrast = 'high'
-vim.cmd.colorscheme("gruvbox-material")
-vim.api.nvim_set_hl(0, "Normal", { bg = "none", ctermbg = "none" })
-vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none", ctermbg = "none" })
-vim.api.nvim_set_hl(0, "NonText", { bg = "none", ctermbg = "none" })
+
+vim.cmd.colorscheme("mine")
 
 -- =============================================
 -- ==               AUTOCMDS                  ==
@@ -407,15 +402,15 @@ function FileSize()
 end
 
 -- Set the colors we're going to use for the various modules of out statusline
-local col_purple = "#d3869b"
-local col_aqua   = "#89b482"
-local col_red    = "#ea6962"
-local col_blue   = "#7daea3"
-local col_green  = "#a9b665"
-local col_orange = "#e78a4e"
-local col_yellow = "#d8a657"
-local col_bg     = "#1d2021"
-local col_fg     = "#d4be98"
+local col_purple = vim.g.colors.magenta
+local col_aqua   = vim.g.colors.cyan
+local col_red    = vim.g.colors.red
+local col_blue   = vim.g.colors.blue
+local col_green  = vim.g.colors.green
+local col_orange = vim.g.colors.bold_yellow
+local col_yellow = vim.g.colors.yellow
+local col_bg     = vim.g.colors.bg
+local col_fg     = vim.g.colors.fg
 
 vim.cmd("highlight StatusMode           guibg=none guifg=" .. col_red)
 vim.cmd("highlight StatusType           guibg=none guifg=" .. col_purple)
