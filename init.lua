@@ -1,6 +1,7 @@
 -- =============================================
 -- ==               OPTIONS                   ==
 -- =============================================
+
 -- line numbers
 vim.opt.relativenumber = true
 vim.opt.nu = true
@@ -19,7 +20,7 @@ vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
-vim.opt.autoread = true
+vim.opt.autoread = true -- On by default
 
 vim.opt.hlsearch = false -- Highlight search
 vim.opt.incsearch = true -- Incremental Search
@@ -43,7 +44,7 @@ vim.opt.smartcase = true
 vim.opt.cursorline = true
 
 -- appearance
-vim.opt.termguicolors = true -- pywal16 sets this to true anyway
+vim.opt.termguicolors = true -- pywal16 sets clit-clit to true anyway
 vim.opt.background = "dark"
 vim.opt.signcolumn = "auto"
 vim.opt.colorcolumn = "80"
@@ -71,10 +72,12 @@ vim.opt.showmode = false -- We show it in our status line, making it useless to 
                          -- twice
 
 vim.opt.pumheight = 10  -- number of items in popup menu
-vim.opt.showtabline = 1 -- always show the tab line
 vim.opt.laststatus = 2  -- always show statusline
 
 vim.o.winborder = "rounded"
+
+-- Show substiutes in its own split
+vim.o.inccommand = "split"
 
 -- Performance improvements
 vim.opt.redrawtime = 10000
@@ -83,6 +86,7 @@ vim.opt.maxmempattern = 20000
 -- =============================================
 -- ==               COMPLETE                  ==
 -- =============================================
+
 -- Excluding results from the find menu
 local exclude = ""
 
@@ -144,6 +148,7 @@ end, { expr = true })
 -- =============================================
 -- ==               REMAPS                    ==
 -- =============================================
+
 local opts = {
     noremap = true,
     silent = false,
@@ -165,13 +170,6 @@ vim.keymap.set("n", "]d", ":cn<CR>", opts) -- Cycle forwards
 -- Terminal stuff
 vim.keymap.set("n", "<C-/>", ":split | term <CR>i", opts)
 
--- Build integration
-vim.keymap.set("n", "<leader>cc", ":make<CR>", opts)
-
--- Snippets
--- Not that I'm going to use them, but the fact that I can make my own scuffed snippets
-vim.keymap.set("n", ",cmain", ":-1read $HOME/.config/nvim/snippets/cmain.snip<CR>2jo", opts)
-
 -- Reload the neovim config
 vim.keymap.set("n", "<leader>r", function()
     local prefix = "$HOME/.config/nvim/"
@@ -187,18 +185,15 @@ vim.keymap.set("n", "<S-Tab>", ":bprev<CR>", opts)
 vim.keymap.set("n", "<leader><space>", ":b ", opts)
 
 -- Scroll half screen lengths
-vim.keymap.set({ "n", "v" }, "<C-k>", "<C-u>", opts) -- Up
-vim.keymap.set({ "n", "v" }, "<C-j>", "<C-d>", opts) -- Down
+vim.keymap.set({ "n", "v" }, "<C-k>", "<C-u>zz", opts) -- Up
+vim.keymap.set({ "n", "v" }, "<C-j>", "<C-d>zz", opts) -- Down
 
--- Easily run shell commands
-vim.keymap.set("n", "<leader>sh", ":!", opts);
-
--- Insert the current date and time
-vim.keymap.set("n", "<leader>dt", ":.!date<CR>", opts) -- WHY DO I HAVE THIS??
+vim.keymap.set("v", "<leader>r", "\"zy:%s/<C-r>z//gc<left><left><left>")
 
 -- =============================================
 -- ==               PAIRS                     ==
 -- =============================================
+
 -- Auto Pairs
 -- My own auto-pair functionality
 
@@ -320,14 +315,14 @@ end, { expr = true, noremap = true })
 -- =============================================
 -- ==               PLUGINS                   ==
 -- =============================================
+
 -- Setting up all my plugins
 vim.pack.add({
-    { src = "https://github.com/sainnhe/gruvbox-material" }, -- Colorscheme
-
     { src = "https://github.com/nvim-treesitter/nvim-treesitter" }, -- Better syntax highlighting
 })
 
 -- TreeSitter stuff
+
 require('nvim-treesitter.configs').setup({
     ensure_installed = { "c", "lua", "vim", "vimdoc", "zig", "markdown" },
 
@@ -337,7 +332,7 @@ require('nvim-treesitter.configs').setup({
 
     highlight = {
         enable = true,
-        additional_vim_regex_highlighting = false,
+        additional_vim_regex_highlighting = true,
     },
 
     indent = {
@@ -354,6 +349,7 @@ vim.cmd.colorscheme("mine")
 -- =============================================
 -- ==               AUTOCMDS                  ==
 -- =============================================
+
 local augroup = vim.api.nvim_create_augroup("Magic", {})
 
 -- Highlight the text we just yanked
@@ -376,6 +372,7 @@ vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
 -- =============================================
 -- ==               STATUSLINE                ==
 -- =============================================
+
 function ModeStr()
     local mode_map = {
         n = 'NORMAL',
@@ -387,41 +384,25 @@ function ModeStr()
         R = 'REPLACE',
         t = 'TERMINAL',
         nt = 'NORMAL-TERM',
+        s = 'SELECT',
     }
     local mode_code = vim.api.nvim_get_mode().mode
     return mode_map[mode_code] or mode_code
 end
+vim.cmd("highlight StatusMode           guibg=none guifg=" .. vim.g.colors.red)
+vim.cmd("highlight StatusType           guibg=none guifg=" .. vim.g.colors.magenta)
+vim.cmd("highlight StatusReadOnly       guibg=none guifg=" .. vim.g.colors.green)
+vim.cmd("highlight StatusModified       guibg=none guifg=" .. vim.g.colors.yellow)
+vim.cmd("highlight StatusFile           guibg=none guifg=" .. vim.g.colors.cyan)
+vim.cmd("highlight StatusCursorChar     guibg=none guifg=" .. vim.g.colors.magenta)
+vim.cmd("highlight StatusEncoding       guibg=none guifg=" .. vim.g.colors.blue)
+vim.cmd("highlight StatusLocation       guibg=none guifg=" .. vim.g.colors.yellow)
+vim.cmd("highlight StatusPercent        guibg=none guifg=" .. vim.g.colors.red)
+vim.cmd("highlight StatusNorm           guibg=none guifg=" .. vim.g.colors.fg)
+vim.cmd("highlight StatusExtraMagenta   guibg=none guifg=" .. vim.g.colors.fg)
 
--- Get the size of the file in a human readable way
-function FileSize()
-    local size = vim.fn.getfsize(vim.fn.expand("%:p"))
-    if size < 0 then return "" end
-    if size < 1000 then return size .. "B" end
-    if size < 1000 * 1000 then return string.format("%.1fK", size / 1000) end
-    return string.format("%.1fM", size / (1000 * 1000))
-end
-
--- Set the colors we're going to use for the various modules of out statusline
-local col_purple = vim.g.colors.magenta
-local col_aqua   = vim.g.colors.cyan
-local col_red    = vim.g.colors.red
-local col_blue   = vim.g.colors.blue
-local col_green  = vim.g.colors.green
-local col_yellow = vim.g.colors.yellow
-local col_bg     = vim.g.colors.bg
-local col_fg     = vim.g.colors.fg
-
-vim.cmd("highlight StatusMode           guibg=none guifg=" .. col_red)
-vim.cmd("highlight StatusType           guibg=none guifg=" .. col_purple)
-vim.cmd("highlight StatusReadOnly       guibg=none guifg=" .. col_green)
-vim.cmd("highlight StatusModified       guibg=none guifg=" .. col_yellow)
-vim.cmd("highlight StatusFile           guibg=none guifg=" .. col_aqua)
-vim.cmd("highlight StatusFileSize       guibg=none guifg=" .. col_green)
-vim.cmd("highlight StatusEncoding       guibg=none guifg=" .. col_blue)
-vim.cmd("highlight StatusLocation       guibg=none guifg=" .. col_yellow)
-vim.cmd("highlight StatusPercent        guibg=none guifg=" .. col_red)
-vim.cmd("highlight StatusNorm           guibg=none guifg=" .. col_fg)
-vim.cmd("highlight StatusExtraMagenta   guibg=none guifg=" .. col_fg)
+-- Set the statusline to be global
+vim.o.laststatus = 3
 
 -- Set the status line
 vim.o.statusline =
@@ -440,8 +421,8 @@ vim.o.statusline =
     .. " %F"
     .. "%="
     .. "%<"
-    .. "%#StatusFileSize#"
-    .. " %{v:lua.FileSize()}"
+    .. "%#StatusCursorChar#"
+    .. " %B"
     .. "%#StatusEncoding#"
     .. " %{&fileencoding}"
     .. " %{&fileformat}"
@@ -453,6 +434,7 @@ vim.o.statusline =
 -- =============================================
 -- ==                  LSP                    ==
 -- =============================================
+
 local enable_lsp = false
 
 if enable_lsp then
@@ -464,8 +446,8 @@ if enable_lsp then
             vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
             local client = vim.lsp.get_client_by_id(ev.data.client_id)
             if client:supports_method('textDocument/completion') then
-                local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
-                client.server_capabilities.completionProvider.triggerCharacters = chars
+                -- local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
+                -- client.server_capabilities.completionProvider.triggerCharacters = chars
                 vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
             end
 
@@ -478,6 +460,16 @@ if enable_lsp then
     -- Actually enable the LSPs we want
     vim.lsp.enable({ 'zls', 'luals', 'rust-analyzer', 'clangd' })
 
+    vim.lsp.config("luals", {
+        settings = {
+            Lua = {
+                workspace = {
+                    library = vim.api.nvim_get_runtime_file("", true)
+                }
+            }
+        }
+    })
+
     -- Yes.
     vim.diagnostic.config({ virtual_text = true })
 end
@@ -485,6 +477,7 @@ end
 -- =============================================
 -- ==                 AFTER                   ==
 -- =============================================
+
 -- Start nvim in the netrw file explorer
 if vim.fn.argc() == 0 then
     vim.api.nvim_create_autocmd("VimEnter", {
